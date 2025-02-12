@@ -1,0 +1,31 @@
+@import '../../style/variables';
+
+.singlePageEntity {
+  margin-top: 50px;
+  display: flex;
+  gap: 30px;
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  &__img {
+    width: 293px;
+    height: 450px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  &__back {
+    justify-self: end;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 24px;
+    &:hover {
+      color: $main-color;
+    }
+  }
+}
