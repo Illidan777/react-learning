@@ -7,13 +7,33 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 import {Link} from "react-router-dom";
 
+const setContent = (process, Component, newItemsLoading) => {
+    switch (process) {
+        case 'waiting': {
+            return <Spinner/>;
+        }
+        case 'loading': {
+            return newItemsLoading ? <Component/> : <Spinner/>;
+        }
+        case 'confirmed': {
+            return <Component/>;
+        }
+        case 'error': {
+            return <ErrorMessage/>;
+        }
+        default: {
+            throw new Error('Unexpected process state!');
+        }
+    }
+}
+
 const ComicsList = () => {
 
     const [comicsList, setComicsList] = useState([]),
             [newItemsLoading, setNewItemsLoading] = useState(false),
             [offset, setOffset] = useState(0),
             [comicsEnded, setComicsEnded] = useState(false),
-            {error, loading, getAllComics} = useMarvelService()
+            { process, setProcess, getAllComics} = useMarvelService()
 
     useEffect(() => {
         onRequestMore(offset, true)
@@ -21,7 +41,7 @@ const ComicsList = () => {
 
     const onRequestMore = (offset, initial) => {
         initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
-        getAllComics().then(onComicsLoaded)
+        getAllComics().then(onComicsLoaded).then(() => setProcess('confirmed'))
     }
 
     const onComicsLoaded = (newComics) => {
@@ -53,17 +73,10 @@ const ComicsList = () => {
         )
     }
 
-    const items = renderItems()
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemsLoading ? <Spinner/> : null;
-
-
     return (
         <div className="comics__list">
             <ul className="comics__grid">
-                {errorMessage}
-                {spinner}
-                {items}
+                {setContent(process, () => renderItems(), newItemsLoading)}
             </ul>
             <button className="button button__main button__long"
                     disabled={newItemsLoading}

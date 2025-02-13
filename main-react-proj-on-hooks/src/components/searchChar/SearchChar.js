@@ -1,6 +1,6 @@
 import './searchChar.scss';
 import {Link} from "react-router-dom";
-import {ErrorMessage, Field, Form, Formik} from "formik";
+import {ErrorMessage as FormikErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import {useState} from "react";
 import useMarvelService from "../../services/UseMarvelService";
@@ -51,7 +51,7 @@ const SearchChar = () => {
                             {spinner}
                             {errorMessage}
                             {successMessage}
-                            <ErrorMessage name="name" className="error" component="div"/>
+                            <FormikErrorMessage name="name" className="error" component="div"/>
                         </div>
                         {goToCharPageButton}
                     </div>

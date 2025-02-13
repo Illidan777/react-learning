@@ -6,12 +6,13 @@ import useMarvelService from "../../services/UseMarvelService";
 import './randomChar.scss';
 
 import mjolnir from '../../resources/img/mjolnir.png';
+import setContent from "../../utils/setContent";
 
 const RandomChar = () => {
     console.log('Start randomChar');
 
     const [char, setChar] = useState(null);
-    const {loading, error, clearError, getCharacter} = useMarvelService();
+    const {clearError, process, setProcess, getCharacter} = useMarvelService();
 
     useEffect(() => {
         console.log('USE EFFECT')
@@ -27,21 +28,14 @@ const RandomChar = () => {
         console.log('Update char')
         clearError();
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
-        getCharacter(id).then(onCharLoaded);
+        getCharacter(id).then(onCharLoaded).then(() => setProcess('confirmed'));
 
     }
 
-
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error || !char) ? <View char={char} /> : null;
-    // const content =  !errorMessage || !spinner ? <View char={char}/> : null; raise error and not using useEffect - why??
-
     return (
         <div className="randomchar">
-            {errorMessage}
-            {spinner}
-            {content}
+
+            {setContent(process, View, char)}
             <div className="randomchar__static">
                 <p className="randomchar__title">
                     Random character for today!<br/>
@@ -59,9 +53,9 @@ const RandomChar = () => {
     )
 }
 
-const View = ({char}) => {
-    console.log(char);
-    const {name, description, thumbnail, homepage, wiki} = char;
+const View = ({data}) => {
+    console.log(data);
+    const {name, description, thumbnail, homepage, wiki} = data;
     const imgClassList = thumbnail.includes('image_not_available') ? 'randomchar__img contain' : 'randomchar__img cover';
 
     return (
